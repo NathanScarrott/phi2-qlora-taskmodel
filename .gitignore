@@ -1,0 +1,31 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Model checkpoints and data
+models/phi2-qlora/*
+models/phi2-qlora-gguf/*
+!models/phi2-qlora/.gitkeep
+!models/phi2-qlora-gguf/.gitkeep
+
+# VS Code
+.vscode/
+
+# Mac
+.DS_Store
