@@ -91,37 +91,46 @@ def normalise(js):
     js["output"] = {k:v for k,v in js["output"].items() if v}
     return js
 
-def main(n=10, outfile="data/task_dataset.jsonl"):
+def main(n=1000, batch_size=100, outfile="data/task_dataset.jsonl"):
     os.makedirs("data", exist_ok=True)
     seen, idx = set(), 0
 
-    with open(outfile, "w") as f:
-        while len(seen) < n:
-            target = INTENTS[idx % len(INTENTS)]   # cycles 0,1,2,0,1,2…
-            idx += 1
-
-            try:
-                raw  = ask_model(target)
-                data = json.loads(raw)
-
-                # skip dups
-                key = hashlib.sha1(data["input"].encode()).hexdigest()
-                if key in seen:
+    # Resume support: load already-generated examples if file exists
+    if os.path.exists(outfile):
+        with open(outfile, "r") as f:
+            for line in f:
+                try:
+                    data = json.loads(line)
+                    key = hashlib.sha1(data["input"].encode()).hexdigest()
+                    seen.add(key)
+                except Exception:
                     continue
-                seen.add(key)
+        print(f"Resuming from {len(seen)} existing examples.")
 
-                data = normalise(data)
-                f.write(json.dumps(data) + "\n")
-
-                if len(seen) % 30 == 0:
-                    print(f"{len(seen)} examples so far")
-            except RateLimitError as e:
-                wait = random.uniform(10, 20)  # Wait 10–20 seconds
-                print(f"Rate limit hit. Waiting {wait:.1f} seconds...")
-                time.sleep(wait)
-            except Exception as e:
-                print("skip:", e)
-                time.sleep(1)
+    while len(seen) < n:
+        batch_target = min(batch_size, n - len(seen))
+        with open(outfile, "a") as f:
+            batch_start = len(seen)
+            while len(seen) < batch_start + batch_target:
+                target = INTENTS[idx % len(INTENTS)]
+                idx += 1
+                try:
+                    raw = ask_model(target)
+                    data = json.loads(raw)
+                    key = hashlib.sha1(data["input"].encode()).hexdigest()
+                    if key in seen:
+                        continue
+                    seen.add(key)
+                    data = normalise(data)
+                    f.write(json.dumps(data) + "\n")
+                except RateLimitError as e:
+                    wait = random.uniform(10, 20)
+                    print(f"Rate limit hit. Waiting {wait:.1f} seconds...")
+                    time.sleep(wait)
+                except Exception as e:
+                    print("skip:", e)
+                    time.sleep(1)
+            print(f"Checkpoint: {len(seen)} examples written.")
 
 if __name__ == "__main__":
-    main(10)
+    main(n=1000, batch_size=100)
