@@ -94,6 +94,8 @@ def normalise(js):
 def main(n=1000, batch_size=100, outfile="data/task_dataset.jsonl"):
     os.makedirs("data", exist_ok=True)
     seen, idx = set(), 0
+    print(f"Generating {n} examples")
+    print(f"Batch size: {batch_size}")
 
     # Resume support: load already-generated examples if file exists
     if os.path.exists(outfile):
