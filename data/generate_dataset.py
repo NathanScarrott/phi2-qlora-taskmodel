@@ -133,4 +133,4 @@ def main(n=1000, batch_size=100, outfile="data/task_dataset.jsonl"):
             print(f"Checkpoint: {len(seen)} examples written.")
 
 if __name__ == "__main__":
-    main(n=1000, batch_size=100)
+    main(n=1200, batch_size=100)
