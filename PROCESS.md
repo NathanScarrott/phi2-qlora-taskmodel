@@ -49,7 +49,7 @@ I've generated 1/3 of the dataset. I think it all looks good. I have 2 concerns.
 Ok I was wrong about the captilisation and punctation in the above entry. I am using whisper by openai (the python package). It does punctuate and capitalize everything.
 
 24/05/25 11:40
-I've generated about 800 data points. I will do the rest at some other point but the data looks good from what I can tell. I guess we will see how effective it is when I actually fine tune the model with it. Anyway, after this is done I will fine tune the model to behave how I want it to do. This will be done in Google Colab since I dont feel like waiting 1-3 days for it to be fine tuned on my laptop's hardware ':D.
+I've generated about 800 data points. I will do the rest now but the data looks good from what I can tell. I guess we will see how effective it is when I actually fine tune the model with it. Anyway, after this is done I will fine tune the model to behave how I want it to do. This will be done in Google Colab since I dont feel like waiting 1-3 days for it to be fine tuned on my laptop's hardware ':D.
 
 ### Fine-Tuning
 - 
