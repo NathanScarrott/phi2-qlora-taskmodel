@@ -23,7 +23,7 @@ Return ONE example following:
 Guidelines:
 • vary phrasing 
 • mix relative and absolute times
-• email bodies ≤ 40 words
+• email bodies ≤ 60 words
 • no duplicates
 Generate now."""
 
@@ -63,6 +63,7 @@ Generate ONE *new* example, following the same JSON schema, with the intent: **{
 
 Rules:
 • Vary phrasing
+• The user input should be given in speech to text format.
 • Mix relative (‘tomorrow’, ‘next Friday’) and absolute times (‘2025-06-03 14:30’).
 • For send_email: always include recipient, subject, body (≤ 40 words).
 • For add_task: include both task and schedule.
@@ -74,7 +75,7 @@ Return only the JSON object—no extra text.
 def ask_model(intent: str):
     resp = client.chat.completions.create(
         model=MODEL,
-        temperature=0.8,
+        temperature=1.0,
         top_p=0.95,
         messages=[
             {"role": "system", "content": SYSTEM_MSG},
@@ -91,7 +92,7 @@ def normalise(js):
     js["output"] = {k:v for k,v in js["output"].items() if v}
     return js
 
-def main(n=1000, batch_size=100, outfile="data/task_dataset.jsonl"):
+def main(n=100, batch_size=10, outfile="data/task_dataset.jsonl"):
     os.makedirs("data", exist_ok=True)
     seen, idx = set(), 0
     print(f"Generating {n} examples")

@@ -35,10 +35,18 @@ Ok, even with all 3 examples the model is still baising the get-weather intent q
 21/05/25 19:50
 Ok all done on that. Also added some rate limit handling for the API just in case. Think it's solid now. Leaving it for the night, Spurs Europa league final. COYS.
 
+---
+
 24/05/25 10:40
 Ok, I'm on the train working now. I am looking to generate my training dataset of 1000 examples. Actually, I might do 1200. I know there is something about needing to split into training and testing so I want to make sure I have enough for training. I think 1000 training, 200 testing should be fine. I'll look into this more.
 
 I've updated the code to generate the dataset 100 at a time with checkpoints. Should allow me to see the process is going smoothly without having to spend the money/time waiting to check the full 1200 are correct all at once. 
+
+24/05/25 11:10
+I've generated 1/3 of the dataset. I think it all looks good. I have 2 concerns. It uses punctuation often, which will not be the case when doing speech to text. The other, smaller concern, is that the data is maybe not quite variant enough. It does vary a fair amount but ideally I want it a bit more. I'll keep this data but adjust the prompt/temperature to adjust these issues for the next 900.
+
+24/05/25 11:25
+Ok I was wrong about the captilisation and punctation in the above entry. I am using whisper by openai (the python package). It does punctuate and capitalize everything.
 
 ### Fine-Tuning
 - 
