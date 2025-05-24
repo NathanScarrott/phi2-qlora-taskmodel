@@ -112,6 +112,7 @@ def main(n=1000, batch_size=100, outfile="data/task_dataset.jsonl"):
         with open(outfile, "a") as f:
             batch_start = len(seen)
             while len(seen) < batch_start + batch_target:
+
                 target = INTENTS[idx % len(INTENTS)]
                 idx += 1
                 try:
@@ -131,6 +132,10 @@ def main(n=1000, batch_size=100, outfile="data/task_dataset.jsonl"):
                     print("skip:", e)
                     time.sleep(1)
             print(f"Checkpoint: {len(seen)} examples written.")
+            resp = input("Continue to next batch? (y/n): ").strip().lower()
+            if resp not in ("y", "yes", ""):
+                print("Exiting at user request.")
+                return
 
 if __name__ == "__main__":
     main(n=1200, batch_size=100)
