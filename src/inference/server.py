@@ -4,16 +4,29 @@ from fastapi.responses import JSONResponse
 from llama_cpp import Llama
 import json
 import re
+import os
 from pydantic import BaseModel
 
 app = FastAPI()
 
+# Debug: Print current directory and files
+print(f"Current working directory: {os.getcwd()}")
+print(f"Files in current dir: {os.listdir('.')}")
+if os.path.exists("models"):
+    print(f"Files in models/: {os.listdir('models')}")
+    if os.path.exists("models/phi2-qlora-gguf"):
+        print(f"Files in models/phi2-qlora-gguf/: {os.listdir('models/phi2-qlora-gguf')}")
+
+model_path = "./models/phi2-qlora-gguf/phi2-q4_k_m.gguf"
+print(f"Trying to load model from: {model_path}")
+print(f"Model file exists: {os.path.exists(model_path)}")
+
 # Load your actual quantized model
 llm = Llama(
-    model_path="./models/phi2-qlora-gguf/phi2-q4_k_m.gguf",
+    model_path=model_path,
     n_ctx=512,
     n_threads=8,
-    verbose=False
+    verbose=True  # More debug output
 )
 
 # Configure CORS
