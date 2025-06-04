@@ -1,0 +1,41 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Model checkpoints and data
+# models/phi2-qlora/*      # <--- comment out or delete this line!
+models/phi2-qlora-gguf/*
+!models/phi2-qlora/.gitkeep
+!models/phi2-qlora-gguf/.gitkeep
+!models/phi2-qlora/**  
+
+# VS Code
+.vscode/
+
+# Mac
+.DS_Store
+models/phi2-merged/
+models/phi2-qlora-gguf/*.gguf
+# Large model files (too big for git)
+models/phi2-merged/*.safetensors
+models/phi2-qlora-gguf/phi2-merged-f16.gguf
+# All model files - too large for git
+*.safetensors
+*.gguf
+*.bin

@@ -1,0 +1,13 @@
+transformers
+peft
+datasets
+bitsandbytes
+trl
+fastapi
+uvicorn
+llama-cpp-python
+requests
+python-dotenv
+torch
+pytest
+openai
