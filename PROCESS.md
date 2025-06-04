@@ -87,6 +87,22 @@ Hit Git LFS quota exceeded error trying to push 5GB+ model files. Nuclear option
 04/05/2025 21:00
 Now looking to put it on AWS EKS instance.
 
+### AWS EKS Deployment
+
+04/05/2025 21:15
+Set up AWS account, IAM user, billing alerts. Created EKS cluster with t3.medium spot instances. Took ages to create (~20 mins) but worked first time.
+
+04/05/2025 21:45
+Had to containerize with Docker first. Created Dockerfile + requirements-docker.txt. Initially failed building because llama-cpp-python needed Git - added git/cmake to apt-get install and it worked.
+
+04/05/2025 22:00
+Pushed to ECR, deployed to Kubernetes. Pod kept crashing - platform mismatch! Built for ARM64 but EKS nodes are x86_64. Rebuilt with --platform linux/amd64.
+
+04/05/2025 22:15
+Working but SLOW - 68 seconds per request vs 2.5s local ':D. t3.medium CPU-only vs my M1 Pro.
+
+04/05/2025 22:30
+Tomorrow will try ARM64 instances (m6g.large) for better performance. Deleted whole cluster - saves ~£1/day and fresh start.
 
 ## Challenges & Solutions
 - 
