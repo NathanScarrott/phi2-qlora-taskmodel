@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phi2-fastapi              # Name of your deployment
+spec:
+  replicas: 1                     # How many copies (start with 1)
+  selector:
+    matchLabels:
+      app: phi2-fastapi           # How to find the pods
+  template:                       # Template for each pod
+    metadata:
+      labels:
+        app: phi2-fastapi         # Label for the pods
+    spec:
+      containers:
+      - name: phi2-fastapi        # Container name
+        image: 045306124706.dkr.ecr.eu-west-2.amazonaws.com/phi2-fastapi:latest
+        ports:
+        - containerPort: 8000     # Port your FastAPI runs on
+        resources:                # Resource limits
+          requests:               # Minimum guaranteed
+            memory: "2Gi"         # 2GB RAM minimum
+            cpu: "500m"           # 0.5 CPU cores minimum
+          limits:                 # Maximum allowed
+            memory: "3Gi"         # 3GB RAM max
+            cpu: "1000m"          # 1 CPU core max
+        readinessProbe:           # Health check
+          httpGet:
+            path: /health         # Your health endpoint
+            port: 8000
+          initialDelaySeconds: 30 # Wait 30s for model to load
+          periodSeconds: 10       # Check every 10s
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: phi2-service
+spec:
+  selector:
+    app: phi2-fastapi            # Connect to pods with this label
+  ports:
+  - port: 80                     # External port
+    targetPort: 8000             # Internal port (your FastAPI)
+  type: LoadBalancer             # Creates AWS Load Balancer
