@@ -52,29 +52,86 @@ project-root/
 3. Test local inference with `llama‑cpp‑python` to confirm it loads.
 
 ---
-## Phase 5 – Inference API (FastAPI)
+## Phase 5 – Production Deployment (AWS Kubernetes)
+
 1. **Local Development**:
    - Create `src/inference/server.py` that:
-     - Loads the GGUF model via `llama‑cpp‑python`.
-     - Exposes a `/convert` POST endpoint receiving JSON `{"text": "<input>"}`.
-     - Returns the model's concise rewrite.
-   - Test locally with `uvicorn src.inference.server:app --reload`.
+     - Loads the GGUF model via `llama-cpp-python`
+     - Exposes `/health` GET endpoint for health checks
+     - Exposes `/api/convert` POST endpoint receiving JSON `{"text": "<input>"}`
+     - Returns structured JSON with intent classification and extracted entities
+   - Test locally with `uvicorn src.inference.server:app --reload`
 
-2. **EC2 Deployment**:
-   - Launch an EC2 instance (t3.medium or c5.large recommended)
-   - Install dependencies: Python, pip, your requirements
-   - Copy your model files (`models/phi2-qlora-gguf/`) to the instance
-   - Configure security group to allow HTTP/HTTPS traffic
-   - Run server with: `uvicorn src.inference.server:app --host 0.0.0.0 --port 8000`
-   - Optional: Set up systemd service for auto-restart
-   - Optional: Add nginx reverse proxy with SSL certificate
+2. **Docker Containerization**:
+   - Create `Dockerfile` with Python 3.11-slim base image
+   - Install system dependencies: `build-essential`, `git`, `cmake`
+   - Create optimized `requirements-docker.txt` with minimal dependencies:
+     - `fastapi==0.104.1`
+     - `uvicorn[standard]==0.24.0` 
+     - `llama-cpp-python==0.2.85` (Phi-2 architecture support)
+     - `pydantic==2.5.0`
+   - Copy quantized model and source code into container
+   - Build multi-platform image: `docker build --platform linux/amd64`
 
-3. **Environment Configuration**:
-   - Update `.env` to include `API_BASE_URL=http://your-ec2-instance:8000`
-   - Test API endpoint: `curl -X POST http://your-ec2-instance:8000/predict -H "Content-Type: application/json" -d '{"text": "remind me to call mom tomorrow"}'`
+3. **AWS Infrastructure Setup**:
+   - Create AWS account with billing alerts and budget controls
+   - Set up IAM user with programmatic access and EKS permissions
+   - Configure AWS CLI with `eu-west-2` region
+   - Create ECR repository for Docker image storage
+   - Push Docker image to ECR: `045306124706.dkr.ecr.eu-west-2.amazonaws.com/phi2-fastapi`
+
+4. **Kubernetes Deployment (EKS)**:
+   - Create EKS cluster configuration (`eks-cluster.yaml`):
+     - Instance type: `m6g.large` (ARM64 Graviton3 for optimal performance)
+     - Spot instances for cost optimization
+     - Auto-scaling: 1-3 nodes
+   - Deploy cluster: `eksctl create cluster -f eks-cluster.yaml` (~20 minutes)
+   - Create Kubernetes deployment configuration (`k8s/deployment.yaml`):
+     - Resource limits: 3GB memory, 2 CPU cores
+     - Health checks on `/health` endpoint  
+     - LoadBalancer service for external access
+   - Deploy application: `kubectl apply -f k8s/deployment.yaml`
+
+5. **Production Testing & Monitoring**:
+   - Verify health endpoint: `GET /health` returns `{"status": "healthy", "model": "phi2-qlora-q4_k_m"}`
+   - Test API endpoint with various intents:
+     ```bash
+     curl -X POST "http://load-balancer-url/api/convert" \
+       -H "Content-Type: application/json" \
+       -d '{"text": "Add buy groceries to my todo list"}'
+     ```
+   - Monitor performance: ~20-25 seconds per inference on ARM64 (3x faster than x86_64)
+   - Monitor costs and scale down when not in use: `eksctl scale nodegroup --nodes=0`
+
+6. **Cost Management**:
+   - **Development**: Scale to 0 nodes overnight (saves ~£0.30/day)
+   - **Production**: ~£1/day for 24/7 availability
+   - **Cleanup**: `eksctl delete cluster` when experimenting complete
+   - **Performance vs Cost**: ARM64 m6g.large provides best price/performance ratio
+
+7. **Performance Characteristics**:
+   - **Model loading**: ~21 seconds (one-time startup cost)
+   - **Inference time**: 20-25 seconds per request (CPU-only ARM64)
+   - **Memory usage**: ~2GB (model + FastAPI overhead)
+   - **Throughput**: 1 concurrent request (single replica)
+   - **Scaling**: Can increase replicas for higher throughput
+
+8. **Production URL & Usage**:
+   - **Live endpoint**: AWS Load Balancer provides public URL
+   - **Health monitoring**: Kubernetes automatically restarts failed containers
+   - **API format**: Returns structured JSON with intent classification:
+     ```json
+     {
+       "success": true,
+       "structured_data": {
+         "intent": "add_task",
+         "task": "buy groceries"
+       }
+     }
+     ```
 ---
 ## Phase 6 – Voice‑Assistant Integration
-1. From your assistant code, POST the user’s transcribed text to `/predict`.
+1. From your assistant code, POST the user’s transcribed text to `/convert`.
 2. Parse the response and execute the corresponding task logic (calendar entry, reminder, etc.).
 
 ---
