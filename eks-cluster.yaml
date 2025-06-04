@@ -1,0 +1,22 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: phi2-test-cluster
+  region: eu-west-2
+  version: "1.28"
+
+managedNodeGroups:
+  - name: worker-nodes
+    instanceTypes: ["m6g.large"]     
+    amiFamily: AmazonLinux2          
+    minSize: 1
+    maxSize: 3
+    desiredCapacity: 1
+    spot: true
+    labels:
+      role: worker
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+        awsLoadBalancerController: true
