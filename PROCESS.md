@@ -81,6 +81,10 @@ I guess the next step is hooking it upto Fast API. I've not had loads of experie
 04/05/2025 20:40
 Ok, also hooking it up to FastAPI was fairly easy. Although I said I hadn't had much experience it was quite similar to the experience I have had. I like FastAPI - it's quick and easy.
 
+04/05/2025 20:45
+Hit Git LFS quota exceeded error trying to push 5GB+ model files. Nuclear option - nuked .git directory, created proper .gitignore, force pushed clean 582KB repo with just the essential code. It was getting very messy and I couldn't figure it out. Think I messed it up earlier - lesson learnt.
+
+
 ## Challenges & Solutions
 - 
 
