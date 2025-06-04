@@ -84,6 +84,9 @@ Ok, also hooking it up to FastAPI was fairly easy. Although I said I hadn't had 
 04/05/2025 20:45
 Hit Git LFS quota exceeded error trying to push 5GB+ model files. Nuclear option - nuked .git directory, created proper .gitignore, force pushed clean 582KB repo with just the essential code. It was getting very messy and I couldn't figure it out. Think I messed it up earlier - lesson learnt.
 
+04/05/2025 21:00
+Now looking to put it on AWS EKS instance.
+
 
 ## Challenges & Solutions
 - 
