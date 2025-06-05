@@ -113,6 +113,9 @@ The full pipeline is now: Voice → Whisper → My Phi-2 model → Actions (Todo
 
 I might see if I can make the TTS local instead of through Eleven Labs API.
 
+05/05/2025 11:10
+Made TTS local using EdgeTTS. No more dependency on ElevenLabs API. The whole voice assistant pipeline is now completely self-contained. Voice input, AI processing, and voice output all running locally.
+
 ## Challenges & Solutions
 - 
 
