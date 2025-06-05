@@ -104,6 +104,15 @@ Working but SLOW - 68 seconds per request vs 2.5s local ':D. t3.medium CPU-only 
 04/05/2025 22:30
 Tomorrow will try ARM64 instances (m6g.large) for better performance. Deleted whole cluster - saves ~£1/day and fresh start.
 
+### Voice Assistant Integration
+
+05/05/2025 10:35
+Hooked up my FastAPI endpoint to my voice assistant! Replaced the OpenRouter/Gemini intent classification with my fine-tuned Phi-2 model. Working perfectly :D. 
+
+The full pipeline is now: Voice → Whisper → My Phi-2 model → Actions (Todoist, weather, etc). Pretty cool to have the whole thing running with my own model instead of external APIs. Response time is good locally and the intent classification is spot on.
+
+I might see if I can make the TTS local instead of through Eleven Labs API.
+
 ## Challenges & Solutions
 - 
 
